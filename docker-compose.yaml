@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  app:
+    container_name: backend-netcore.app
+    image: backend-netcore.app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "6060:6060"
+    expose:
+      - 6060
+    volumes:
+      - ./src/Api/appsettings-compose.json:/app/bin/appsettings.json
+    networks:
+      - internal
+    depends_on:
+      - db
+
+  db:
+    container_name: backend-netcore.db
+    image: mcr.microsoft.com/mssql/server:2019-latest    
+    ports:
+      - "1433:1433"   
+    volumes:      
+      - ./database/seeds/:/tmp/seeds/
+    environment:
+      SA_PASSWORD: "Pass123*"
+      ACCEPT_EULA: "Y"       
+    networks:
+      - internal  
+   
+networks: 
+    internal:
+        driver: bridge
