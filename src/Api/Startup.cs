@@ -1,8 +1,7 @@
-using System.Linq;
 using Api.Configurations;
+using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,7 +27,7 @@ namespace api
             services.ConfigureRepositories();
             services.ConfigureHandlers();
             services.AddCORS();
-            services.ConfigureSwagger();
+            services.ConfigureSwagger();            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
