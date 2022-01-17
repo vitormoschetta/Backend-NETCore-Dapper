@@ -1,4 +1,4 @@
-# Backend NET Core
+# Backend NET Core Dapper
 
 
 
@@ -17,18 +17,10 @@ Domain
 Infra
 ```
 
-###### dotnet new mstest
-```
-Tests
-```
-
-
 ### Referências entre as camadas
 
 - **Infra** faz referência ao **Domain**  
 - **Api** faz referência ao **Domain** e **Infra**  
-- **Test** faz referência ao **Domain**  
-
 
 
 
@@ -37,9 +29,13 @@ Tests
 
 --- 
 
-# ORM
+# ORM Dapper
 
-Dapper
+
+### Migrations:
+
+<https://fluentmigrator.github.io/>
+
 
 <br>
 <br>
