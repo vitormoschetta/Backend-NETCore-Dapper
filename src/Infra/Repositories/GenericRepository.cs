@@ -1,47 +1,49 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Dapper.Contrib.Extensions;
 using Domain.Contracts.Repositories;
 
 namespace Infra.Repositories
 {
-    public abstract class GenericRepository<TEntity> : DatabaseManager, IGenericRepository<TEntity> where TEntity : class
+    public abstract class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        protected GenericRepository(System.Data.IDbConnection connection) : base(connection)
+        protected DbSession _session;
+
+        protected GenericRepository(DbSession session)
         {
+            _session = session;
         }
 
         public async Task Add(TEntity item)
         {
-            await _connection.InsertAsync<TEntity>(item);
+            await _session.Connection.InsertAsync<TEntity>(item, _session.Transaction);
         }
 
         public async Task Delete(TEntity item)
         {
-            await _connection.DeleteAsync<TEntity>(item);
+            await _session.Connection.DeleteAsync<TEntity>(item, _session.Transaction);
         }
 
         public async Task Delete(Guid id)
         {
-            var item = await _connection.GetAsync<TEntity>(id);
-            await _connection.DeleteAsync<TEntity>(item);
+            var item = await _session.Connection.GetAsync<TEntity>(id, _session.Transaction);
+            await _session.Connection.DeleteAsync<TEntity>(item, _session.Transaction);
         }
 
         public async Task Update(TEntity item)
         {
-            await _connection.UpdateAsync<TEntity>(item);
+            await _session.Connection.UpdateAsync<TEntity>(item, _session.Transaction);
         }
 
         public async Task<TEntity> Get(Guid id)
         {
-            return await _connection.GetAsync<TEntity>(id);
+            return await _session.Connection.GetAsync<TEntity>(id, _session.Transaction);
         }
 
         public async Task<IEnumerable<TEntity>> GetAll()
         {
-            return await _connection.GetAllAsync<TEntity>();
+            return await _session.Connection.GetAllAsync<TEntity>(_session.Transaction);
         }
     }
 }

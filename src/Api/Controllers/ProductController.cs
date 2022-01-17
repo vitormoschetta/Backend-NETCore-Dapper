@@ -28,7 +28,6 @@ namespace Api.Controllers
             [FromBody] ProductCreateCommand command)
         {
             return await handler.Handle(command);
-
         }
 
 

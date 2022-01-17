@@ -8,6 +8,8 @@ namespace Api.Configurations
     {
         public static void ConfigureRepositories(this IServiceCollection services)
         {
+            services.AddScoped<DbSession>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IProductRepository, ProductRepository>();
         }
     }

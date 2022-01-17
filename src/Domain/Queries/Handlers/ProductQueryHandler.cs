@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Domain.Contracts.Queries;
 using Domain.Contracts.Repositories;
@@ -17,26 +16,26 @@ namespace Domain.Queries.Handlers
     /// </summary>
     public class ProductQueryHandler : IProductQueryHandler
     {
-        private readonly IProductRepository _repository;
+        private readonly IUnitOfWork _uow;
 
-        public ProductQueryHandler(IProductRepository repository)
+        public ProductQueryHandler(IUnitOfWork uow)
         {
-            _repository = repository;
+            _uow = uow;
         }
 
         public async Task<IEnumerable<Product>> Handle()
         {
-            return await _repository.GetAll();
+            return await _uow.Products.GetAll();
         }
 
         public async Task<IEnumerable<Product>> Handle(string filter)
         {
-            return await _repository.GetByFilter(filter);
+            return await _uow.Products.GetByFilter(filter);
         }
 
         public async Task<Product> Handle(Guid id)
         {
-            return await _repository.Get(id);
+            return await _uow.Products.Get(id);
         }
     }
 }

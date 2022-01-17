@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Contracts.Repositories
 {
-    public interface IGenericRepository<TEntity> : IDisposable
+    public interface IGenericRepository<TEntity>
     {
         Task<IEnumerable<TEntity>> GetAll();
         Task<TEntity> Get(Guid id);

@@ -9,11 +9,11 @@ namespace Domain.Commands.Handlers
 {
     public class ProductCommandHandler : IProductCommandHandler
     {
-        private readonly IProductRepository _repository;
+        private readonly IUnitOfWork _uow;
 
-        public ProductCommandHandler(IProductRepository repository)
+        public ProductCommandHandler(IUnitOfWork uow)
         {
-            _repository = repository;
+            _uow = uow;
         }
 
         public async Task<GenericResponse> Handle(ProductCreateCommand command)
@@ -30,14 +30,19 @@ namespace Domain.Commands.Handlers
                 return new GenericResponse(false, ErrorParser.GetErrorMessage(validationResult));
             }
 
-            if (await _repository.Exists(command.Name))
+            if (await _uow.Products.Exists(command.Name))
             {
                 return new GenericResponse(false, "Já existe um Produto cadastrado com esse Nome. ", command.Name);
             }
 
             var product = new Product(command.Name, command.Price);
 
-            await _repository.Add(product);
+            //_uow.BeginTransaction();
+
+            await _uow.Products.Add(product);
+
+            //_uow.Commit();
+            //_uow.Rollback();
 
             return new GenericResponse(true, "Produto cadastrado com sucesso! ", product);
         }
@@ -56,12 +61,12 @@ namespace Domain.Commands.Handlers
                 return new GenericResponse(false, ErrorParser.GetErrorMessage(validationResult));
             }
 
-            if (await _repository.ExistsUpdate(command.Name, command.Id))
+            if (await _uow.Products.ExistsUpdate(command.Name, command.Id))
             {
                 return new GenericResponse(false, "Já existe um Produto cadastrado com esse Nome. ", command.Name);
             }
 
-            var product = await _repository.Get(command.Id);
+            var product = await _uow.Products.Get(command.Id);
 
             if (product is null)
             {
@@ -70,7 +75,7 @@ namespace Domain.Commands.Handlers
 
             product.Update(command.Name, command.Price);
 
-            await _repository.Update(product);
+            await _uow.Products.Update(product);
 
             return new GenericResponse(true, "Produto atualizado com sucesso!. ", product);
         }
@@ -89,7 +94,7 @@ namespace Domain.Commands.Handlers
                 return new GenericResponse(false, ErrorParser.GetErrorMessage(validationResult));
             }
 
-            var product = await _repository.Get(command.Id);
+            var product = await _uow.Products.Get(command.Id);
 
             if (product == null)
             {
@@ -98,7 +103,7 @@ namespace Domain.Commands.Handlers
 
             product.AddPromotion(command.Price);
 
-            await _repository.Update(product);
+            await _uow.Products.Update(product);
 
             return new GenericResponse(true, "Preço do Produto atualizado com sucesso! ", product);
         }
@@ -110,14 +115,14 @@ namespace Domain.Commands.Handlers
                 return new GenericResponse(false, "Product is invalid!");
             }
 
-            var product = await _repository.Get(command.Id);
+            var product = await _uow.Products.Get(command.Id);
 
             if (product == null)
             {
                 return new GenericResponse(false, "Produto não encontrado na base de dados. ");
             }
 
-            await _repository.Delete(product.Id);
+            await _uow.Products.Delete(product.Id);
 
             return new GenericResponse(true, "Produco excluído com sucesso! ", product);
         }
