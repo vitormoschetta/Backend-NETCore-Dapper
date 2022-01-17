@@ -7,7 +7,7 @@ namespace Domain.Contracts.Repositories
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
-        IEnumerable<Product> GetByFilter(string filter);
+        Task<IEnumerable<Product>> GetByFilter(string filter);
         Task<bool> Exists(string name);
         Task<bool> ExistsUpdate(string name, Guid id);
         

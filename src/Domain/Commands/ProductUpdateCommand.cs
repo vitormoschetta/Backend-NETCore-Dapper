@@ -1,11 +1,16 @@
 using System;
+using Domain.Validations;
+using FluentValidation.Results;
 
 namespace Domain.Commands
 {
-    public class ProductUpdateCommand
+    public class ProductUpdateCommand : BaseProductCommand
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
+
+        public ValidationResult Validate()
+        {
+            return new ProductCommandValidator().Validate(this);
+        }
     }
 }

@@ -131,7 +131,8 @@ namespace Infra.Repositories
 
 
         public void Dispose()
-        {            
+        {
+                        
             _connection.Close();
             GC.SuppressFinalize(this);
         }

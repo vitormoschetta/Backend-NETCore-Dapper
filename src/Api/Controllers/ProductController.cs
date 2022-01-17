@@ -5,7 +5,7 @@ using Domain.Commands;
 using Domain.Commands.Responses;
 using Domain.Contracts.Commands;
 using Domain.Contracts.Queries;
-using Domain.Queries.Responses;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,6 +21,7 @@ namespace Api.Controllers
         {
             _logger = logger;
         }
+
 
         [HttpPost]
         public async Task<GenericResponse> Create([FromServices] IProductCommandHandler handler,
@@ -58,17 +59,15 @@ namespace Api.Controllers
         }
 
 
-        [HttpGet("GetPaginated/{skip:int}/{take:int}")]
-        public async Task<IEnumerable<ProductResponse>> GetAll([FromServices] IProductQueryHandler handler,
-            [FromRoute] int skip = 0,
-            [FromRoute] int take = 5)
+        [HttpGet]
+        public async Task<IEnumerable<Product>> GetAll([FromServices] IProductQueryHandler handler)
         {
-            return await handler.Handle(skip, take);
+            return await handler.Handle();
         }
 
 
         [HttpGet("{id}")]
-        public async Task<ProductResponse> GetById([FromServices] IProductQueryHandler handler,
+        public async Task<Product> GetById([FromServices] IProductQueryHandler handler,
             Guid id)
         {
             return await handler.Handle(id);
@@ -76,7 +75,7 @@ namespace Api.Controllers
 
 
         [HttpGet("Search/{filter}")]
-        public async Task<IEnumerable<ProductResponse>> Search([FromServices] IProductQueryHandler handler,
+        public async Task<IEnumerable<Product>> Search([FromServices] IProductQueryHandler handler,
             string filter)
         {
             return await handler.Handle(filter);

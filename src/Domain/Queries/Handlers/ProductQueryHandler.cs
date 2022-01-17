@@ -4,38 +4,39 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Contracts.Queries;
 using Domain.Contracts.Repositories;
-using Domain.Queries.Responses;
+using Domain.Entities;
 
 namespace Domain.Queries.Handlers
 {
+    /// <summary>
+    /// Essa classe não necessariamente precisa existir. A UI/Controller poderia acessar o 
+    /// repositório diretamente.
+    /// Porém, caso os objetos (Models) retornado do banco de dados possuirem informações 
+    /// que não desejamos apresentar na UI, então essa classe seria o local ideal 
+    /// para o mapeamento dos dados para uma ViewModel.
+    /// </summary>
     public class ProductQueryHandler : IProductQueryHandler
     {
         private readonly IProductRepository _repository;
+
         public ProductQueryHandler(IProductRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<IEnumerable<ProductResponse>> Handle(int skip, int take)
+        public async Task<IEnumerable<Product>> Handle()
         {
-            return from item in await _repository.GetAll()
-                   select new ProductResponse(item.Id, item.Name, item.Price);
+            return await _repository.GetAll();
         }
 
-        public async Task<IEnumerable<ProductResponse>> Handle(string filter)
+        public async Task<IEnumerable<Product>> Handle(string filter)
         {
-            return from item in _repository.GetByFilter(filter)
-                   select new ProductResponse(item.Id, item.Name, item.Price);
+            return await _repository.GetByFilter(filter);
         }
 
-        public async Task<ProductResponse> Handle(Guid id)
+        public async Task<Product> Handle(Guid id)
         {
-            var item = await _repository.Get(id);
-
-            if (item is null)
-                return new ProductResponse();
-
-            return new ProductResponse(item.Id, item.Name, item.Price);
+            return await _repository.Get(id);
         }
     }
 }

@@ -2,7 +2,7 @@ namespace Domain.Commands.Responses
 {
     public class GenericResponse
     {
-        public GenericResponse(bool success, string message = "", object data = null)
+        public GenericResponse(bool success, string message, object data = null)
         {
             Success = success;
             Message = message;

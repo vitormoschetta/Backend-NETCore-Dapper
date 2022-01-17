@@ -1,8 +1,13 @@
+using Domain.Validations;
+using FluentValidation.Results;
+
 namespace Domain.Commands
 {
-    public class ProductCreateCommand
+    public class ProductCreateCommand : BaseProductCommand
     {
-        public string Name { get; set; }
-        public decimal Price { get; set; }
+        public ValidationResult Validate()
+        {
+            return new ProductCommandValidator().Validate(this);
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace Infra.Repositories
             var exist = false;
 
             var query = "select * from product p where p.name = @Name";
-            var response = await _connection.QueryAsync<Product>(query, new { Name = name});
+            var response = await _connection.QueryAsync<Product>(query, new { Name = name });
 
             if (response.Any()) exist = true;
 
@@ -31,18 +31,18 @@ namespace Infra.Repositories
         {
             var exist = false;
 
-            var query = "select * from product p where p.name = @Name and p.id <> @Id";
-            var response = await _connection.QuerySingleAsync<Product>(query, new { Name = name, Id = id });
+            var query = "select * from product p where p.name = @Name and p.id != @Id";
+            var response = await _connection.QueryAsync<Product>(query, new { Name = name, Id = id });
 
-            if (response != null) exist = true;
+            if (response.Any()) exist = true;
 
             return exist;
         }
 
-        public IEnumerable<Product> GetByFilter(string filter)
+        public async Task<IEnumerable<Product>> GetByFilter(string filter)
         {
-            var query = "select * from product p where p.name like '%@Filter%' or p.price like '%@Filter%'";
-            return _connection.Query<Product>(query, new { Filter = filter });
+            var query = $"select * from product p where p.name like '%{filter}%'";
+            return await _connection.QueryAsync<Product>(query);
         }
     }
 }
